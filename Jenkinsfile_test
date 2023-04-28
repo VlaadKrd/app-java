@@ -38,6 +38,17 @@ pipeline {
                     }
                 }
             }
+            post {
+                always {
+                    script {
+                        apps.each { app, path ->
+                            dir (path) {
+                                junit 'target/target/surefire-reports/*.xml'
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     post {
