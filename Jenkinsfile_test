@@ -50,6 +50,17 @@ pipeline {
                 }
             }
         }
+        stage('Image create') {
+            steps {
+                script {
+                    apps.each { app, path ->
+                        dir (path) {
+                            sh "docker build -t ${app} -f Dockerfile-create ."
+                        }
+                    }
+                }
+            }
+        }
     }
     post {
         always {
