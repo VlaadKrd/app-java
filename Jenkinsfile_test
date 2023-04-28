@@ -1,0 +1,42 @@
+pipeline {
+    agent {label 'master'}
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '5'))
+        disableConcurrentBuilds()
+        timestamps()
+        ansiColor('xtrem')
+    }
+
+    environment {
+        SERVICES_FILE = 'simple-java-project/apps/services.json'
+    }
+    stages{
+        stage{'Prepare'} {
+            steps {
+                script{
+                    apps = readJSON file: SERVICES_FILE
+                    println {apps}
+                }
+            }
+        }
+        stage{'Build'} {
+            steps {
+                script {
+                    apps.each { app, path ->
+                        dir(path) {
+                            sh """
+                                // docker rm -f ${app}
+                                // [ -d target] || mkdir target
+                                docker build -t ${app} -f Dockerfile-build .
+                                // docker run --name ${app} ${app} mvn test &&
+                                // docker cp ${app}:/app/target/ target/
+                                // docker rm -f ${app}
+                            """
+                        }
+
+                    }
+                }
+            }
+        }
+    }
