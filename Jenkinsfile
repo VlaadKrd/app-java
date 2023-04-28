@@ -47,13 +47,13 @@ def stageImageCreate(app, path, lock_id) {
 
 
 pipeline {
-    agent { label 'master' }
+    agent any
 
     options {
         buildDiscarder(logRotator(numToKeepStr: '5'))
         disableConcurrentBuilds()
         timestamps()
-        // ansiColor('xtrem')
+        ansiColor('xtrem')
     }
 
     environment {
