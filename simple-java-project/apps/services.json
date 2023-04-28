@@ -1,0 +1,5 @@
+{
+    "hello-world" : "simple-java-project/apps/hello-world",
+    "hello-python" : "simple-java-project/apps/hello-python",
+    "hello-docker" : "simple-java-project/apps/hello-docker"
+}
