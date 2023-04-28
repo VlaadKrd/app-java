@@ -11,8 +11,9 @@ pipeline {
     environment {
         SERVICES_FILE = 'simple-java-project/apps/services.json'
     }
+    
     stages{
-        stage{'Prepare'} {
+        stage('Prepare') {
             steps {
                 script{
                     apps = readJSON file: SERVICES_FILE
@@ -20,7 +21,7 @@ pipeline {
                 }
             }
         }
-        stage{'Build'} {
+        stage('Build') {
             steps {
                 script {
                     apps.each { app, path ->
