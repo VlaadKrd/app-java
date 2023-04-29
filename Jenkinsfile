@@ -16,7 +16,7 @@ pipeline {
         stage('Prepare') {
             steps {
                 script {
-                    func = load 'app-java/func'
+                    func = load 'app-java/'
                     apps = readJSON file: SERVICES_FILE
                     println (apps)
                     Integer PARALLEL_EXECUTE_COUNT = 2
