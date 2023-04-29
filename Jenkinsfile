@@ -46,7 +46,7 @@ def stageImageCreate(app, path, lock_id) {
 
 
 pipeline {
-    agent any
+    agent {Label 'master'}
 
     options {
         buildDiscarder(logRotator(numToKeepStr: '5'))
