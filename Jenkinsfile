@@ -19,7 +19,6 @@ def stageBuildCreate(app, path, lock_id) {
             lock("Build-lock-${lock_id}") {
                 dir(path) {
                     sh """
-                        docker rm -f ${app}
                         [ -d target] || mkdir target
                         docker build -t ${app} -f Dockerfile-build .
                         docker run --name ${app} ${app} mvn test &&
