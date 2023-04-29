@@ -10,13 +10,14 @@ pipeline {
 
     environment {
         SERVICES_FILE = 'simple-java-project/apps/services.json'
+        func = load 'app-java/func'
     }
 
     stages {
         stage('Prepare') {
             steps {
                 script {
-                    func = load 'app-java/'
+                    // func = load 'app-java/'
                     apps = readJSON file: SERVICES_FILE
                     println (apps)
                     Integer PARALLEL_EXECUTE_COUNT = 2
