@@ -31,7 +31,6 @@ pipeline {
                                 docker build -t ${app} -f Dockerfile-build .
                                 docker run --name ${app} ${app} mvn test &&
                                 docker cp ${app}:/app/target/ target/
-                                // docker rm -f ${app}
                             """
                         }
 
