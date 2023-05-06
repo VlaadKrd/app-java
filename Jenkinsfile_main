@@ -1,0 +1,93 @@
+def stagePrepare(apps) {
+    stageList = []
+    stageMap = [:]
+    apps.each { app, path ->
+        stageMap.put(app, stageBuildCreate(app, path))
+    }
+    stageList.add(stageMap)
+    return stageList
+}
+
+def stageBuildCreate(app, path) {
+    return {
+        stage(app) {
+            dir(path) {
+                sh """
+                    [ -d target] || mkdir target
+                    docker build -t ${app} -f Dockerfile-build .
+                    docker run --name ${app} ${app} mvn test &&
+                    docker cp ${app}:/app/target/ target/
+                    docker rm -f ${app}
+                """
+                builtApps.put(app, path)
+            }
+            
+        }
+    }
+}
+
+pipeline {
+    agent {label 'master'}
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '5'))
+        disableConcurrentBuilds()
+        timestamps()
+        ansiColor('xtrem')
+    }
+
+    environment {
+        SERVICES_FILE = 'simple-java-project/apps/services.json'
+    }
+    
+    stages{
+        stage('Prepare') {
+            steps {
+                script{
+                    apps = readJSON file: SERVICES_FILE
+                    println {apps}
+                    buildStages = stagePrepare(apps)
+                }
+            }
+        }
+        stage ('Parallel build') {
+            steps {
+                script {
+                    buildStages.each { stage ->
+                        parallel stage
+                    }
+                }
+            }
+        }
+        stage('Image create') {
+            steps {
+                script {
+                    apps.each { app, path ->
+                        dir (path) {
+                            sh "docker build -t ${app} -f Dockerfile-create ."
+                        }
+                    }
+                }
+            }
+        }
+        stage('Deploy'){
+            steps {
+                script {
+                    apps.each { app, path ->
+                        dir(path) {
+                             sh """
+                                docker run ${app}
+                                docker rm -f ${app}
+                            """
+                        }
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
