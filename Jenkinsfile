@@ -48,7 +48,6 @@ def stageImageCreate(app, path, lock_id) {
     }
 }
 
-
 def stageDeploy(app, path, lock_id) {
     return {
         stage(app) {
@@ -112,7 +111,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage ('Parallel Deploy') {
             steps {
                 script {
