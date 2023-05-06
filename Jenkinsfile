@@ -4,12 +4,13 @@ def stagePrepare(flag, apps, parallel_count) {
     apps.eachWithIndex { app, path, i ->
         Integer lock_id = i % parallel_count
         if (flag == 'build') {
-            stageMap.put(app, stageBuildCreate(app, path, lock_id))
-        } if (flag == 'image') {
+            stageMap.put(app, stageBuildCreate(app, path, lock_id)) 
+            if (flag == 'image') {
             stageMap.put(app, stageImageCreate(app, path, lock_id))
-        } else {
+            } 
+        }   else {
             stageMap.put(app, stageDeploy(app, path, lock_id))
-        }
+            }
     }
     stageList.add(stageMap)
     return stageList
