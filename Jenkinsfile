@@ -112,7 +112,8 @@ pipeline {
                 }
             }
         }
-         stage ('Parallel Deploy') {
+        
+        stage ('Parallel Deploy') {
             steps {
                 script {
                     Integer PARALLEL_EXECUTE_COUNT = 2
